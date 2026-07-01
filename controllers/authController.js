@@ -1,7 +1,7 @@
 const bcrypt = require("bcrypt");
 const User = require("../models/User");
 
-async function singup(req, res, next) {
+async function signup(req, res, next) {
     try{
         const {username, email, password}= req.body;
         
@@ -10,12 +10,16 @@ async function singup(req, res, next) {
         }
 
         const passwordHash = await bcrypt.hash(password, 10);
-        const user = new User({username, email, password});
+        const user = new User({username, email, passwordHash});
+        await user.save();
 
         req.session.userId = user._id.toString();
         req.session.username = user.username;
 
-        return res.status(201).json({message: "User registered successfully"});
+        return res.status(201).json({
+            message: "User registered successfully",
+            user: { id: user._id.toString(), username: user.username }
+        });
     }catch (err) {
         if(err.code == 11000){
             return res.status(400).json({message: "User already exists"});
@@ -30,19 +34,22 @@ async function login(req, res, next) {
 
         const user = await User.findOne({email: email});
         if(!user){
-            return res.json(400, {message: "user not present"});
+            return res.status(400).json({message: "user not present"});
         }
         
         const valid = await bcrypt.compare(password, user.passwordHash);
 
         if(!valid){
-            return res.json(401, {message: "invalid password"})
+            return res.status(401).json({message: "invalid password"})
         }
 
         req.session.userId = user._id.toString();
         req.session.username = user.username;
 
-        res.status(200).json({message: "User logged in successfully"});
+        res.status(200).json({
+            message: "User logged in successfully",
+            user: { id: user._id.toString(), username: user.username }
+        });
 
     }catch (err){
         next(err);
@@ -57,4 +64,13 @@ async function logout(req, res,next) {
     })
 }
 
-module.exports = { singup, login, logout};
+async function listUsers(req, res, next) {
+    try {
+        const users = await User.find({ _id: { $ne: req.user.id } }).select('username email avatarUrl status lastSeen');
+        res.json(users);
+    } catch (err) {
+        next(err);
+    }
+}
+
+module.exports = { signup, login, logout, listUsers};

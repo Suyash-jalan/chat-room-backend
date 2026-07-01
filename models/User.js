@@ -15,7 +15,7 @@ const userschema = mongoose.Schema({
     },
     avatarUrl: {
         type: String,
-        default: NULL
+        default: null
     },
     status: {
         type: String,
@@ -32,4 +32,6 @@ const userschema = mongoose.Schema({
     }
 }, {timestamps: true});
 
-const User = mongoose.model('User', UserSchema);
+const User = mongoose.model('User', userschema);
+
+module.exports = User;

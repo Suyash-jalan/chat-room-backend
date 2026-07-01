@@ -18,11 +18,11 @@ const messageSchema = mongoose.Schema({
     },
     text: {
         type: String,
-        default: NULL
+        default: null
     },
     attachmentUrl: {
         type: String,
-        default: NULL
+        default: null
     },
     readBy: [{
         type: mongoose.Schema.Types.ObjectId,

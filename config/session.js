@@ -1,5 +1,5 @@
 const session = require('express-session');
-const MongoStore = require('connect-mongo');
+const { MongoStore } = require('connect-mongo');
 const sessionMiddleware = session({
  secret: process.env.SESSION_SECRET,
  resave: false,

@@ -1,4 +1,4 @@
-const mongoose = requie("mongoose");
+const mongoose = require("mongoose");
 
 const conversationschema = mongoose.Schema({
     type: {
@@ -8,13 +8,13 @@ const conversationschema = mongoose.Schema({
     },
     name: {
         type: String,
-        default: NULL
+        default: null
     },
     members:[{
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User'
     }],
-    createBy: {
+    createdBy: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User'
     },
