@@ -1,6 +1,6 @@
 const express = require("express");
 const authrouter = express.Router();
-
+const auth= require('../middleware/auth');
 const authController = require("../controllers/authController");
 
 authrouter.post("/singup", authController.singup);
